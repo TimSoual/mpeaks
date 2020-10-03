@@ -1,0 +1,10 @@
+venv
+
+*.pyc
+__pycache__/
+
+# IDE settings
+*.iml
+.idea
+.vscode/*
+.vscode/settings.json

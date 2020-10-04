@@ -15,10 +15,11 @@ Including another URLconf
 """
 # from django.contrib import admin
 from django.urls import path
-from mpeaks.mpeaksapp.views import PeakList, PeakDetail
+from mpeaks.mpeaksapp.views import PeakList, PeakDetail, PeakFilterList
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('peaks/', PeakList),
     path('peaks/<int:pk>/', PeakDetail),
+    path('peaks/filter/', PeakFilterList),
 ]

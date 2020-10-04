@@ -55,3 +55,23 @@ def PeakDetail(request, pk):
     elif request.method == 'DELETE':
         task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@csrf_exempt
+@api_view(['GET'])
+def PeakFilterList(request):
+    """
+    Find peaks inside boundary given by a geographical bounding box.
+    """
+    min_lon = request.query_params.get('minlon')
+    min_lat= request.query_params.get('minlat')
+    max_lon = request.query_params.get('maxlon')
+    max_lat= request.query_params.get('maxlat')
+
+    if not all([min_lon, min_lat, max_lon, max_lat]):
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    bbox = (max_lon, max_lat, min_lon, min_lat)
+    geom = Polygon.from_bbox(bbox)
+    peaks = Peak.objects.filter(location__within=geom)
+    serializer = PeakSerializer(peaks, many=True)
+    return Response(serializer.data)

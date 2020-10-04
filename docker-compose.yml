@@ -13,12 +13,14 @@ services:
   db:
     image: kartoza/postgis:11.5-2.8
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql
     environment:
       - "POSTGRES_HOST_AUTH_METHOD=trust"
       - POSTGRES_USER=user001
       - POSTGRES_PASS=123456789
       - POSTGRES_DBNAME=gis
+    ports:
+      - "5433:5432"
 
 volumes:
   postgres_data:

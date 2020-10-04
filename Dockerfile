@@ -8,7 +8,6 @@ RUN apk add --no-cache \
             --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
         postgresql-client \
         libpq \
-        nginx\
     && apk add --no-cache \
                --upgrade \
                --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \

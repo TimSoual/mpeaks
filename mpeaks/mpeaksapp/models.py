@@ -5,10 +5,8 @@ class Peak(models.Model):
     Represents a mountain peak
     """
     name = models.CharField(max_length=100)
-    # lon = models.FloatField()
-    # lat = models.FloatField()
     location = models.PointField()
     altitude = models.FloatField()
 
-    # def __str__():
-    #     return self.name + self.altitude
+    def __str__():
+        return self.name + self.altitude

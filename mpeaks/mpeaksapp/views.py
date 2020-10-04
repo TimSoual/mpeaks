@@ -7,8 +7,26 @@ from .serializers import PeakSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+ex = {
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [38.66935, -122.633316]
+    },
+    "properties": {
+    "altitude": 4810.0,
+    "name": "Mount Saint Helena"
+    }
+}
+peak_response = openapi.Response('peak description', PeakSerializer, examples={'application/json': ex})
+peak_responses = openapi.Response('peak description', PeakSerializer(many=True), examples={'application/json': [ex]})
 
 @csrf_exempt
+@swagger_auto_schema(method='get', responses={200: peak_responses}, operation_description="List all peaks")
+@swagger_auto_schema(method='post', request_body=PeakSerializer, responses={200: peak_responses}, operation_description="Create a new peak")
 @api_view(['GET', 'POST'])
 def PeakList(request):
     """
@@ -29,6 +47,9 @@ def PeakList(request):
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
+@swagger_auto_schema(method='get', operation_description="Get an existing peak", responses={200: peak_response, 404: 'Error: Not Found'})
+@swagger_auto_schema(method='put', operation_description="Update an existing peak", request_body=PeakSerializer, responses={200: peak_response, 404: 'Error: Not Found', 400: 'Bad request'})
+@swagger_auto_schema(method='delete', operation_description="Delete an existing peak")
 @api_view(['GET', 'PUT', 'DELETE'])
 def PeakDetail(request, pk):
     """
@@ -56,7 +77,14 @@ def PeakDetail(request, pk):
         task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+minlon_param = openapi.Parameter('minlon', openapi.IN_QUERY, description="Minimum longitude", type=openapi.TYPE_NUMBER)
+minlat_param = openapi.Parameter('minlat', openapi.IN_QUERY, description="Minimum latitude", type=openapi.TYPE_NUMBER)
+maxlon_param = openapi.Parameter('maxlon', openapi.IN_QUERY, description="Maximum longitude", type=openapi.TYPE_NUMBER)
+maxlat_param = openapi.Parameter('maxlat', openapi.IN_QUERY, description="Maximum latitude", type=openapi.TYPE_NUMBER)
+
 @csrf_exempt
+@swagger_auto_schema(method='get', operation_description="Get a list of peaks in an area", manual_parameters=[minlon_param, minlat_param, maxlon_param, maxlat_param], responses={200: peak_responses})
 @api_view(['GET'])
 def PeakFilterList(request):
     """

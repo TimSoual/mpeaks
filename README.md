@@ -19,7 +19,7 @@ docker-compose up --build
 And to stop it:
 
 ```sh
-docker-down
+docker-compose down
 ```
 
 ## Usage
